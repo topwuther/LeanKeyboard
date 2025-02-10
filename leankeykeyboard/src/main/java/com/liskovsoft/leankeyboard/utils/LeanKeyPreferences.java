@@ -109,7 +109,7 @@ public final class LeanKeyPreferences {
                 .apply();
     }
 
-    public boolean getCyclicNavigationEnabled() {
+    public boolean isCyclicNavigationEnabled() {
         return mPrefs.getBoolean(CYCLIC_NAVIGATION_ENABLED, false);
     }
 

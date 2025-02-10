@@ -14,6 +14,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
+import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -532,7 +533,8 @@ public class LeanbackKeyboardContainer {
      * @param context context
      */
     private void startRecognition(Context context) {
-        if (PermissionHelpers.hasStoragePermissions(context) &&
+        // MANAGE_EXTERNAL_STORAGE does not work on Android 14
+        if ((PermissionHelpers.hasStoragePermissions(context) || VERSION.SDK_INT >= 34) &&
             PermissionHelpers.hasMicPermissions(context)) {
             if (SpeechRecognizer.isRecognitionAvailable(context)) {
                 mRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -680,7 +682,7 @@ public class LeanbackKeyboardContainer {
 
     public void updateCyclicFocus(int dir, KeyFocus oldFocus, KeyFocus newFocus) {
         if (oldFocus.equals(newFocus) || LeanbackUtils.isSubmitButton(newFocus)) {
-            if (LeanKeyPreferences.instance(mContext).getCyclicNavigationEnabled()) {
+            if (LeanKeyPreferences.instance(mContext).isCyclicNavigationEnabled()) {
                 if (dir == DIRECTION_RIGHT || dir == DIRECTION_LEFT) {
                     Rect actionRect = new Rect();
                     offsetRect(actionRect, mActionButtonView);
@@ -707,9 +709,7 @@ public class LeanbackKeyboardContainer {
                         configureFocus(newFocus, mRect, keyIdx, key, 0);
                     }
                 }
-            }
-
-            if (dir == DIRECTION_UP) {
+            } else if (dir == DIRECTION_UP) {
                 // Hide the keyboard when moving focus out of the keyboard
                 mContext.hideIme();
             }

@@ -307,18 +307,26 @@ public class LeanbackImeService extends KeyMapperImeService {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //// DOESN'T WORK!!!
+        //// Hide keyboard on ESC key: https://github.com/yuliskov/SmartYouTubeTV/issues/142
+        //event = mapEscToBack(event);
+        //keyCode = mapEscToBack(keyCode);
+
         // Hide keyboard on ESC key: https://github.com/yuliskov/SmartYouTubeTV/issues/142
-        event = mapEscToBack(event);
-        keyCode = mapEscToBack(keyCode);
+        if (keyCode == KeyEvent.KEYCODE_ESCAPE) {
+            hideIme();
+            return true;
+        }
 
         return isInputViewShown() && mKeyboardController.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event);
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        // Hide keyboard on ESC key: https://github.com/yuliskov/SmartYouTubeTV/issues/142
-        event = mapEscToBack(event);
-        keyCode = mapEscToBack(keyCode);
+        //// DOESN'T WORK!!!
+        //// Hide keyboard on ESC key: https://github.com/yuliskov/SmartYouTubeTV/issues/142
+        //event = mapEscToBack(event);
+        //keyCode = mapEscToBack(keyCode);
 
         return isInputViewShown() && mKeyboardController.onKeyUp(keyCode, event) || super.onKeyUp(keyCode, event);
     }
