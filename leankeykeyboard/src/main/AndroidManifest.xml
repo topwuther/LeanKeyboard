@@ -32,6 +32,10 @@
         android:label="@string/ime_name"
         android:theme="@style/Theme.Leanback">
 
+        <meta-data
+            android:name="tv.reference_plus_preload_category"
+            android:value="oem_1p_app" />
+
         <activity
             android:name="com.liskovsoft.leankeyboard.activity.settings.KbSettingsActivity2"
             android:launchMode="singleTop"
