@@ -383,6 +383,13 @@ public class LeanbackKeyboardController implements LeanbackKeyboardContainer.Voi
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
                     handled = onDirectionalMove(LeanbackKeyboardContainer.DIRECTION_RIGHT);
                     break;
+                case KeyEvent.KEYCODE_SHIFT_LEFT:
+                case KeyEvent.KEYCODE_SHIFT_RIGHT:
+                    if (Log.isLoggable("LbKbController", Log.DEBUG)) {
+                        Log.d("LbKbController", "language change");
+                    }
+                    mContainer.onLangKeyClick();
+                    break;
                 case KeyEvent.KEYCODE_DPAD_CENTER:
                 case KeyEvent.KEYCODE_ENTER:
                     if (eventRepeatCount == 0) {

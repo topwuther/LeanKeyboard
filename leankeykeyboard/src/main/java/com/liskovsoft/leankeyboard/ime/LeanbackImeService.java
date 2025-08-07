@@ -3,6 +3,7 @@ package com.liskovsoft.leankeyboard.ime;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.os.Build.VERSION;
 import android.os.Handler;
@@ -17,8 +18,12 @@ import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import androidx.core.text.BidiFormatter;
+
+import com.liskovsoft.leankeyboard.addons.keyboards.KeyboardInfo;
+import com.liskovsoft.leankeyboard.addons.keyboards.intkeyboards.ResKeyboardInfo;
 import com.liskovsoft.leankeyboard.ime.LeanbackKeyboardController.InputListener;
 import com.liskovsoft.leankeyboard.utils.LeanKeyPreferences;
+import com.liskovsoft.leankeykeyboard.R;
 
 public class LeanbackImeService extends KeyMapperImeService {
     private static final String TAG = LeanbackImeService.class.getSimpleName();
@@ -37,6 +42,7 @@ public class LeanbackImeService extends KeyMapperImeService {
     private LeanbackSuggestionsFactory mSuggestionsFactory;
     public static final String COMMAND_RESTART = "restart";
     private boolean mForceShowKbd;
+    private LeanKeyPreferences mPrefs;
 
     @SuppressLint("HandlerLeak")
     private final Handler mHandler = new Handler() {
@@ -66,8 +72,25 @@ public class LeanbackImeService extends KeyMapperImeService {
         super.onCreate();
 
         Log.d(TAG, "onCreate");
-
         initSettings();
+        injectSettings();
+    }
+
+    private void injectSettings() {
+        String[] langs = this.getResources().getStringArray(R.array.additional_languages);
+        int[] selected = {0,18};
+        for (int index : selected) {
+            KeyboardInfo info = new ResKeyboardInfo();
+            String langPair = langs[index];
+            String[] pairs = langPair.split("\\|");
+            final String langName = pairs[0];
+            final String langCode = pairs[1];
+            info.setLangName(langName);
+            info.setLangCode(langCode);
+            info.setIsAzerty(false);
+            info.setEnabled(true);
+            ResKeyboardInfo.updatePrefs(this, info);
+        }
     }
 
     private void setupDensity() {
@@ -81,11 +104,11 @@ public class LeanbackImeService extends KeyMapperImeService {
     }
 
     private void initSettings() {
-        LeanKeyPreferences prefs = LeanKeyPreferences.instance(this);
-        mForceShowKbd = prefs.getForceShowKeyboard();
+        mPrefs = LeanKeyPreferences.instance(this);
+        mForceShowKbd = mPrefs.getForceShowKeyboard();
 
         if (mKeyboardController != null) {
-            mKeyboardController.setSuggestionsEnabled(prefs.getSuggestionsEnabled());
+            mKeyboardController.setSuggestionsEnabled(mPrefs.getSuggestionsEnabled());
         }
     }
 

@@ -51,7 +51,7 @@ public class ResKeyboardInfo implements KeyboardInfo {
         info.setEnabled(kbdEnabled);
     }
 
-    private static void updatePrefs(Context ctx, KeyboardInfo info) {
+    public static void updatePrefs(Context ctx, KeyboardInfo info) {
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ctx);
 
         final SharedPreferences.Editor editor = sharedPreferences.edit();
